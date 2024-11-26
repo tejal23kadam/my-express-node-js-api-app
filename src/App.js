@@ -1,23 +1,38 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
+
 
 function App() {
+  const [data, setData] = useState(null);
+  //axios.defaults.proxy.host = "http://localhost:4000"
+  useEffect(() => {
+    axios.get('/api/data/', {
+      proxy: {
+        host: 'localhost',
+        port: 4000
+      }
+    })
+      .then(response => {
+        setData(response.data);
+      })
+      .catch(error => {
+        console.error(error);
+      });
+  }, []);
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <h1>React and Node.js Integration</h1>
+      {(data) ? (
+        data.map((data) => (
+          <div key={data}>
+            {data}
+          </div>
+        ))
+      ) : (
+        <h3>empty Array</h3>
+      )
+      }
     </div>
   );
 }
